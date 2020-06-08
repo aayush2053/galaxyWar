@@ -410,7 +410,7 @@ public class PantallaNivel3 implements Screen{
 
         }
 
-        if(contaMarcianos>=1){
+        if(contaMarcianos>=30){
 
             ((Game)Gdx.app.getApplicationListener()).setScreen(new PantallaBoss());
         }

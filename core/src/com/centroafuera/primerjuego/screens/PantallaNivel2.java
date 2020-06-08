@@ -399,7 +399,7 @@ public class PantallaNivel2 implements Screen{
             backX=0;
 
         }
-        if(contaMarcianos>=1){
+        if(contaMarcianos>=20){
 
             ((Game)Gdx.app.getApplicationListener()).setScreen(new PantallaNivel3());
         }
