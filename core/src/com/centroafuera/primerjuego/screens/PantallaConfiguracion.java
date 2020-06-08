@@ -50,7 +50,7 @@ public class PantallaConfiguracion implements Screen {
         });
 
 
-        final VisRadioButton checkModo = new VisRadioButton(" NIVEL:DIFICULTAD");
+        final VisRadioButton checkModo = new VisRadioButton(" NIVEL 2");
         checkModo.setChecked(prefs.getBoolean("modo"));
         checkModo.addListener(new ClickListener() {
             @Override
@@ -60,6 +60,8 @@ public class PantallaConfiguracion implements Screen {
 
             }
         });
+
+
 
         VisTextButton quitButton = new VisTextButton("SALIR");
         quitButton.addListener(new ClickListener() {

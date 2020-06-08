@@ -3,10 +3,15 @@ package com.centroafuera.primerjuego.screens;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.kotcrab.vis.ui.VisUI;
+import com.kotcrab.vis.ui.widget.VisImage;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisTable;
 import com.kotcrab.vis.ui.widget.VisTextButton;
@@ -14,8 +19,16 @@ import com.kotcrab.vis.ui.widget.VisTextButton;
 
 public class PantallaMenuPrinicpal implements Screen {
     Stage stage;
+    boolean normal=true;
+    int dificultad=1;
+    Texture background1;
+    public float screenHeight;
+    public float screenWidth;
     @Override
     public void show() {
+        screenHeight=Gdx.graphics.getHeight();
+        screenWidth=Gdx.graphics.getWidth();
+        background1= new Texture("backgrounds/back2.jpg");
             if (!VisUI.isLoaded())
                 VisUI.load();
 
@@ -27,29 +40,48 @@ public class PantallaMenuPrinicpal implements Screen {
 
 
 
+        /*VisTextButton playButton = new VisTextButton("PLAY");
+        playButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Preferences prefs = Gdx.app.getPreferences("opciones");
+                if (normal) {
+                    ((Game) Gdx.app.getApplicationListener()).setScreen(new PantallaHistoria(dificultad));
+                    dispose();
+                } else {
+                    if (prefs.getBoolean("modo")) {
+                        ((Game) Gdx.app.getApplicationListener()).setScreen(new PantallaDificilNivel2());
+                        dispose();
+                    } else {
+                        ((Game) Gdx.app.getApplicationListener()).setScreen(new PantallaJuego());
+                        dispose();
+                    }
+                }
+            }
 
+        });*/
         VisTextButton playButton = new VisTextButton("PLAY");
         playButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Preferences prefs = Gdx.app.getPreferences("opciones");
                 if (prefs.getBoolean("modo")) {
-                    ((Game) Gdx.app.getApplicationListener()).setScreen(new PantallaDificilNivel2());
+                    ((Game) Gdx.app.getApplicationListener()).setScreen(new PantallaHistoria3(dificultad));
                     dispose();
                 } else {
-                        ((Game) Gdx.app.getApplicationListener()).setScreen(new PantallaJuego());
+                        ((Game) Gdx.app.getApplicationListener()).setScreen(new PantallaHistoria(dificultad));
                         dispose();
                     }
                 }
 
         });
 
-            VisTextButton multiJugador = new VisTextButton("MULTIJUGADOR");
+            VisTextButton multiJugador = new VisTextButton("MULTIPLAYER");
             multiJugador.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     Preferences prefs = Gdx.app.getPreferences("opciones");
-                    ((Game) Gdx.app.getApplicationListener()).setScreen(new PantallaMultiJugador());
+                    ((Game) Gdx.app.getApplicationListener()).setScreen(new PantallaHistoria2(dificultad));
                     dispose();
                 }
 
@@ -75,19 +107,96 @@ public class PantallaMenuPrinicpal implements Screen {
                     }
                 });
 
-                VisLabel aboutLabel = new VisLabel("Demo libGDX\n(c)Aayush 2020");
+                VisLabel aboutLabel = new VisLabel("Demo libGDX\n(c)Aayush 2020 \nNote: SPACE Key-Shooting \n   Arrows Keys-Moving SpaceShip");
                 aboutLabel.setColor(Color.RED);
+
+
+        Drawable combat= new Drawable() {
+            @Override
+            public void draw(Batch batch, float x, float y, float width, float height) {
+                batch.draw(new Texture("backgrounds/combat.jpg"),x,y);
+
+                //comentario
+            }
+
+            @Override
+            public float getLeftWidth() {
+                return 0;
+            }
+
+            @Override
+            public void setLeftWidth(float leftWidth) {
+
+            }
+
+            @Override
+            public float getRightWidth() {
+                return 0;
+            }
+
+            @Override
+            public void setRightWidth(float rightWidth) {
+
+            }
+
+            @Override
+            public float getTopHeight() {
+                return 0;
+            }
+
+            @Override
+            public void setTopHeight(float topHeight) {
+
+            }
+
+            @Override
+            public float getBottomHeight() {
+                return 0;
+            }
+
+            @Override
+            public void setBottomHeight(float bottomHeight) {
+
+            }
+
+            @Override
+            public float getMinWidth() {
+                return 0;
+            }
+
+            @Override
+            public void setMinWidth(float minWidth) {
+
+            }
+
+            @Override
+            public float getMinHeight() {
+                return 0;
+            }
+
+            @Override
+            public void setMinHeight(float minHeight) {
+
+            }
+
+        };
+
+
+
+
                 // Añade filas a la tabla y añade los componentes
+                VisImage combatImage = new VisImage(combat);table.row();
+                table.add(combatImage).center().width(400).height(0).pad(0);
                 table.row();
-                table.add(playButton).center().width(200).height(100).pad(5);
+                table.add(playButton).center().width(200).height(70).pad(5);
                 table.row();
-                table.add(multiJugador).left().width(200).height(50).pad(5);
+                table.add(multiJugador).center().width(200).height(70).pad(5);
                 table.row();
-                table.add(configButton).center().width(200).height(50).pad(5);
+                table.add(configButton).center().width(200).height(70).pad(5);
                 table.row();
-                table.add(quitButton).center().width(200).height(50).pad(5);
+                table.add(quitButton).center().width(200).height(70).pad(5);
                 table.row();
-                table.add(aboutLabel).left().width(200).height(20).pad(5);
+                table.add(aboutLabel).left().width(200).height(50).pad(20);
 
                 Gdx.input.setInputProcessor((InputProcessor) stage);
         }
@@ -126,7 +235,6 @@ public class PantallaMenuPrinicpal implements Screen {
         public void dispose() {
 
         }
-
 
 
     }

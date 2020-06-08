@@ -153,10 +153,9 @@ public class PantallaMultiJugador implements Screen {
 
             }
 
-
         }
         if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE)){
-            ((Game)Gdx.app.getApplicationListener()).setScreen(new PantallaMenuPrinicpal());
+            ((Game)Gdx.app.getApplicationListener()).setScreen(new PantallaPause4(this));
         }
 
 
@@ -433,9 +432,9 @@ public class PantallaMultiJugador implements Screen {
         batch.draw(background2,backX+screenWidth,0,screenWidth,screenHeight);
         movNAve=cambiaTexturaNave(nave,movNAve);
         nave.pintar(batch);
-        font.draw(batch, "Vidas: "+String.valueOf(contaVidas), 30, 450);
-        fontMarciano.draw(batch,"Marcianos muertos: "+String.valueOf(contaMarcianos),90,450);
-        totalMarciano.draw(batch,"Tus Objetivo: 20 Marcianos",250,450);
+        font.draw(batch, "Vidas: "+String.valueOf(contaVidas), 10, 700);
+        fontMarciano.draw(batch,"Marcianos muertos: "+String.valueOf(contaMarcianos),90,700);
+        totalMarciano.draw(batch,"Tus Objetivo para ir a Nivel 2: 10 Marcianos",250,700);
         cambiarTexturaMarcianos();
 
         nave2.pintar(batch);
@@ -462,7 +461,7 @@ public class PantallaMultiJugador implements Screen {
             backX=0;
         }
         if(contaMarcianos>=20){
-            ((Game)Gdx.app.getApplicationListener()).setScreen(new PantallaFin());
+            ((Game)Gdx.app.getApplicationListener()).setScreen(new PantallaMultiJugador2());
         }
     }
     @Override

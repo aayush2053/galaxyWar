@@ -18,7 +18,7 @@ import com.centroafuera.primerjuego.util.Constantes;
 import java.util.Random;
 
 
-public class PantallaJuego implements Screen{
+public class PantallaNivel2 implements Screen{
 
     private SpriteBatch batch;
     private Nave nave;
@@ -29,7 +29,9 @@ public class PantallaJuego implements Screen{
     private Array<Vida> vidas;
     private long tiempoMarciano;
     private long tiempoRoca;
+    private long tiempoDarth;
     private long tiempoVida;
+    private Array<Darth> darths;
 
     private int contaVidas=0;
     private int contaMarcianos=0;
@@ -38,10 +40,8 @@ public class PantallaJuego implements Screen{
     BitmapFont totalMarciano;
     int vidaMarcianos = Constantes.VIDA_MARCIANOS;
     int vidaRocas = Constantes.VIDA_ROCA;
-    int velMarcianos = Constantes.VELOCIDAD_MARCIANOS;
-    int velRocas = Constantes.VELOCIDAD_ROCAS;
+    int vidaDarth=Constantes.VIDA_DARTH;
     int velBack=Constantes.BACKGROUND_VELOCIDAD;
-    int velNave=Constantes.VELOCIDAD_NAVE;
     private long tiempoRotacionRoca;
     Music aSound;
 
@@ -56,17 +56,19 @@ public class PantallaJuego implements Screen{
     @Override
     public void show() {
         batch = new SpriteBatch();
-        nave = new Nave(new Vector2(10,200),new Texture("ship/f1.png"),3,velNave);
+        nave = new Nave(new Vector2(10,200),new Texture("ship/f1.png"),3,8);
 
         marcianos = new Array<>();
         contaVidas=nave.getVidas();
         tiempoMarciano= TimeUtils.millis();
         tiempoRoca = TimeUtils.millis();
         tiempoVida=TimeUtils.millis();
+        tiempoDarth=TimeUtils.millis();
         tiempoRotacionRoca = TimeUtils.millis();
         balas = new Array<>();
         rocas = new Array<>();
         vidas = new Array<>();
+        darths= new Array<>();
 
         font = new BitmapFont();
         font.setColor(Color.BLUE);
@@ -84,11 +86,9 @@ public class PantallaJuego implements Screen{
 
         screenHeight=Gdx.graphics.getHeight();
         screenWidth=Gdx.graphics.getWidth();
-        background1= new Texture("backgrounds/back2.jpg");
-        background2= new Texture("backgrounds/back2.jpg");
+        background1= new Texture("backgrounds/back3.jpg");
+        background2= new Texture("backgrounds/back3.jpg");
     }
-
-
 
     @Override
     public void render(float delta) {
@@ -127,11 +127,9 @@ public class PantallaJuego implements Screen{
 
 
         }
+        if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE))
+            ((Game) Gdx.app.getApplicationListener()).setScreen(new PantallaPause2(this));
 
-        if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE)){
-            ((Game) Gdx.app.getApplicationListener()).setScreen(new PantallaPause(this));
-
-        }
 
 
         generarEnemigos();
@@ -154,7 +152,7 @@ public class PantallaJuego implements Screen{
             enX= Gdx.graphics.getWidth()-Texture.getWidth();
             enY= MathUtils.random(0,Gdx.graphics.getHeight());
 
-            Marciano marciano = new Marciano(new Vector2(enX,enY),new Texture("enemy/e_f1.png"),vidaMarcianos,velMarcianos);
+            Marciano marciano = new Marciano(new Vector2(enX,enY),new Texture("enemy/e_f1.png"),vidaMarcianos,10);
             marcianos.add(marciano);
             tiempoMarciano=TimeUtils.millis();
 
@@ -163,7 +161,7 @@ public class PantallaJuego implements Screen{
             Texture texRoca = new Texture("enemy/stone1.png");
             enX= Gdx.graphics.getWidth()-texRoca.getWidth();
             enY=MathUtils.random(0,Gdx.graphics.getHeight());
-            Roca roca = new Roca(new Vector2(enX,enY),texRoca,vidaRocas,velRocas);
+            Roca roca = new Roca(new Vector2(enX,enY),texRoca,vidaRocas,10);
             rocas.add(roca);
             tiempoRoca=TimeUtils.millis();
 
@@ -172,10 +170,21 @@ public class PantallaJuego implements Screen{
             Texture texVida = new Texture("items/heart.png");
             enX= Gdx.graphics.getWidth()-texVida.getWidth();
             enY=MathUtils.random(0,Gdx.graphics.getHeight());
-            Vida vida = new Vida(new Vector2(enX,enY),texVida,vidaMarcianos,velMarcianos);
+            Vida vida = new Vida(new Vector2(enX,enY),texVida,vidaMarcianos,3);
             vidas.add(vida);
             tiempoVida=TimeUtils.millis();
         }
+
+        if(TimeUtils.millis()- tiempoDarth>Constantes.TIEMPO_ENTRE_DARTH){
+            Texture texDarth = new Texture("enemy/darrh.png");
+            enX= Gdx.graphics.getWidth()-texDarth.getWidth();
+            enY=MathUtils.random(0,Gdx.graphics.getHeight());
+            Darth darth = new Darth(new Vector2(enX,enY),texDarth,vidaDarth,10);
+            darths.add(darth);
+            tiempoDarth=TimeUtils.millis();
+        }
+
+
 
 
     }
@@ -210,7 +219,6 @@ public class PantallaJuego implements Screen{
             if (nave.rect.overlaps(vida.rect)) {
                 vidas.removeValue(vida, true);
                 nave.sumarVida();
-
             }
         }
 
@@ -218,8 +226,8 @@ public class PantallaJuego implements Screen{
             if(nave.rect.overlaps(marciano.rect)){
                 marcianos.removeValue(marciano,true);
                 nave.quitarVida();
-
             }
+
             if(nave.getVidas()<=0){
                 ((Game)Gdx.app.getApplicationListener()).setScreen(new PantallaFin());
                 Preferences prefs = Gdx.app.getPreferences("opciones");
@@ -249,11 +257,25 @@ public class PantallaJuego implements Screen{
                 }
             }
 
+
             for(Bala bala : balas){
                 if(bala.rect.overlaps(roca.rect)){
                     balas.removeValue(bala,true);
                     roca.quitarVida();
+                    if(roca.getVidas()==0){
+                        rocas.removeValue(roca,true);
+                    }
+                }
+            }
+        }
 
+        for(Darth darth: darths) {
+            if (nave.rect.overlaps((darth.rect))) {
+                nave.setTexture(new Texture("explosion/explosion0010.png"));
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new PantallaFin());
+                Preferences prefs = Gdx.app.getPreferences("opciones");
+                if (prefs.getBoolean("musica")) {
+                    aSound.stop();
                 }
             }
         }
@@ -267,6 +289,13 @@ public class PantallaJuego implements Screen{
 
             if(marciano.getPosicion().x<=0.5){
                 marcianos.removeValue(marciano,true);
+            }
+        }
+        for(Darth darth : darths){
+            darth.moverIzquierda();
+
+            if(darth.getPosicion().x<=0.5){
+                darths.removeValue(darth,true);
             }
         }
         for(Roca roca : rocas){
@@ -342,9 +371,9 @@ public class PantallaJuego implements Screen{
         batch.draw(background1,backX,0,screenWidth,screenHeight);
         batch.draw(background2,backX+screenWidth,0,screenWidth,screenHeight);
         nave.pintar(batch);
-        font.draw(batch, "Vidas: "+String.valueOf(contaVidas), 10, 700);
-        fontMarciano.draw(batch,"Marcianos muertos: "+String.valueOf(contaMarcianos),90,700);
-        totalMarciano.draw(batch,"Tus Objetivo para ir a Nivel 2: 10 Marcianos",250,700);
+        font.draw(batch, "LIVES: "+String.valueOf(contaVidas), 10, 700);
+        fontMarciano.draw(batch,"Marcianos Deads: "+String.valueOf(contaMarcianos),90,700);
+        totalMarciano.draw(batch,"Your target to reach level 3: 20 Marcianos",250,700);
         cambiarTextureMarcianos();
 
         for(Marciano marciano: marcianos){
@@ -361,16 +390,20 @@ public class PantallaJuego implements Screen{
         for (Vida vida: vidas){
             vida.pintar(batch);
         }
+        for (Darth darth: darths){
+            darth.pintar(batch);
+        }
         batch.end();
         backX -= velBack;
         if(backX+screenWidth==0){
             backX=0;
 
         }
+        if(contaMarcianos>=1){
 
-        if(contaMarcianos>=10){
-            ((Game)Gdx.app.getApplicationListener()).setScreen(new PantallaNivel2());
+            ((Game)Gdx.app.getApplicationListener()).setScreen(new PantallaNivel3());
         }
+
     }
     @Override
     public void resize(int width, int height) {

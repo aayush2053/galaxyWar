@@ -2,6 +2,7 @@ package com.centroafuera.primerjuego.screens;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.kotcrab.vis.ui.VisUI;
@@ -23,11 +24,13 @@ public class PantallaObjetivo implements Screen {
         table.setFillParent(true);
         stage.addActor(table);
 
-        VisLabel texto = new VisLabel("                    Winner!!!!!\n     Ya has cumplido tus objetivo \n Pulsar 'Enter' para proximo juego");
+        VisLabel texto = new VisLabel("                   Winner!!!!!\nYou have completed your objective \n   Press Enter for the next game!!!");
 
         // Añade filas a la tabla y añade los componentes
+        texto.setColor(Color.GOLD);
+        texto.setFontScale(3);
         table.row();
-        table.add(texto).center().width(200).height(100).pad(5);
+        table.add(texto).center();
 
         Gdx.input.setInputProcessor(stage);
         Preferences prefs = Gdx.app.getPreferences("opciones");

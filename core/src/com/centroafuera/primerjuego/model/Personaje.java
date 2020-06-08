@@ -12,6 +12,8 @@ public class Personaje {
     private Texture texture;
     private int vidas;
     private int velocidad;
+
+
     public Rectangle rect;
     private  int posiTexture;
 
@@ -23,6 +25,22 @@ public class Personaje {
         this.velocidad = velocidad;
         posiTexture=1;
         rect = new Rectangle(posicion.x,posicion.y,texture.getWidth(),texture.getHeight());
+    }
+    public Personaje(Texture texture, int vidas, int velocidad) {
+
+        this.texture = texture;
+        this.vidas = vidas;
+        this.velocidad = velocidad;
+        posiTexture=1;
+
+
+
+    }
+
+
+    public void setVecConRec(Vector2 posicion){
+        this.posicion=posicion;
+        rect = new Rectangle(getPosicion().x,getPosicion().y,texture.getWidth(),texture.getHeight());
     }
 
     public Vector2 getPosicion() {
@@ -103,6 +121,9 @@ public class Personaje {
     public void quitarVida(){
         int vida = this.getVidas()-1;
         setVidas(vida);
+
+
+
     }
 
     public void sumarVida(){
